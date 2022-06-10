@@ -51,8 +51,6 @@ class board {
     }
 
 }
-
-
 function changeX(){        // changing X and Y fields at the same time (if changed separately there will be issues with opening empty fields)
     let xValue = document.getElementById('XInput').value
     document.getElementById('YInput').value = xValue
@@ -89,13 +87,11 @@ function random() {
     }
 return randomMinesTemp
 }
-
 let minesAmount = (board1.size)/8
 minesAmount = Math.floor(minesAmount)
 document.getElementById("minesCounter").value = minesAmount
 let infoSize = 60*board1.x+60+board1.x*3.2+'px'     // formula for measuring size of the info menu (the one with the counter and stuff)
 document.getElementById("info").style.width = infoSize
-
 class field {
     emptyTabCopy = []
     randomMinesTemp = []
@@ -106,23 +102,21 @@ class field {
     upperEdges = []
     lowerEdges = []
     corners = []
-
     constructor() {
         this.minePlace()
         this.getEdges()
         this.getEmptyFields()
     }
     getEmptyFields(){
-        this.emptyTabCopy = arraysForDeletion()
+        let emptyFieldsAroundMines = new getEmptyFieldsAroundMines()
+        this.emptyTabCopy = emptyFieldsAroundMines.emptyTabCopy
         console.log(this.emptyTabCopy)
         let emptyTabCopyNoEdges = []
         for (let i=0;i<this.emptyTabCopy.length;i++){
             let emptyTabCopyNoEdgesTemp = this.emptyTabCopy[i].filter(i => !this.leftEdges.includes(i) && !this.rightEdges.includes(i) && !this.upperEdges.includes(i) && !this.lowerEdges.includes(i) && !this.corners.includes(i))
-
             emptyTabCopyNoEdges.push(emptyTabCopyNoEdgesTemp)
-
         }
-        emptyTabCopyNoEdges = emptyTabCopyNoEdges.filter(a => !a.every(ax=> a === undefined)) // deleting empty arrays
+        emptyTabCopyNoEdges = emptyTabCopyNoEdges.filter(a => !a.every(()=> a === undefined)) // deleting empty arrays
         console.log(emptyTabCopyNoEdges)
         console.log(this.emptyTabCopy)
         for (let i = 0;i<emptyTabCopyNoEdges.length;i++){ // when an empty fields are open there could be another empty fields diagonally which has different array
@@ -179,28 +173,24 @@ class field {
     }
     getEdges(){
         for (let i = board1.x;i<board1.buttonId.length;i+=board1.x){  // making array with left edges of the board
-            if (i<board1.buttonId.length-board1.x){ //lower left corner would have a different logic, so it does't need here
+            if (i<board1.buttonId.length-board1.x){ //lower left corner would have a different logic, so it doesn't need here
                 this.leftEdges.push(board1.buttonId[i])
             }
-
         }
         for (let i = board1.x+board1.x-1;i<board1.buttonId.length;i+=board1.x){  // making array with right edges of the board(without the first one and the last one)
             if (i<board1.size-1){
                 this.rightEdges.push(board1.buttonId[i])
             }
-
         }
         for (let i = 1;i<board1.buttonId.length;i++){  // making array with upper edges of the board(without the first one and the last one)
             if (i<board1.x-1){
                 this.upperEdges.push(board1.buttonId[i])
             }
-
         }
         for (let i = board1.size+1-board1.x;i<board1.buttonId.length;i++){  // making array with lower edges of the board(without the first one and the last one)
             if (i<board1.size-1){
                 this.lowerEdges.push(board1.buttonId[i])
             }
-
         }
         this.corners.push(board1.buttonId[0],board1.buttonId[board1.x-1],board1.buttonId[board1.size-board1.x],board1.buttonId[board1.size-1]) // making array with corners
     }
@@ -211,7 +201,6 @@ class field {
             let rand = this.randomMinesTemp[this.randomMinesTemp.length-1-i]
             this.minesForStopwatch.push(rand) // will be used later on to stop the timer if button with mine is pressed
             this.mines.push(rand+'td')
-
         }
         for (let i = 0;i<board1.size;i++) {     // counting the mines to show it on the table cell
             let minesCounter = 0
@@ -265,15 +254,8 @@ class field {
             minesPos.innerHTML = '  '
         }
     }
-
 }
 let field1 = new field()
-
-// for (let i=0;i<board1.buttonId.length;i++){
-//     let disable = document.getElementById(board1.buttonId[i])
-//     disable = disable.style.opacity = '0.5'
-// }
-
 class game {
     constructor() {
         this.emptyFieldsShow()
@@ -286,8 +268,6 @@ class game {
             buttonsWithMines[i] = buttonsWithMines[i].slice(0,-2)
         }
         console.log(field1.mines)
-
-
         document.addEventListener("contextmenu",function (e) {
             let target = e.target
             let targetId = target.id
@@ -296,7 +276,7 @@ class game {
             let getPressedButton = document.getElementById(board1.buttonId[indexOfPressedButton])
             let minesCounterHtml = document.getElementById('minesCounter')
             if (getPressedButton.style.opacity !== '0'){
-                if (getPressedButton.style.background === "grey"){    //if you click and there is no flag image it's shows a flag
+                if (getPressedButton.style.background === "grey"){    //if you click and there is no flag image its shows a flag
                     getPressedButton.disabled = true
                     getPressedButton.style.background = img
                     minesLeftCounter--
@@ -315,9 +295,7 @@ class game {
                     if (board1.buttonId[indexOfPressedButton]===buttonsWithMines[i]){
                         flagCounter--
                     }
-
                 }
-
                 if (minesLeftCounter<0){
                     minesLeftCounter++
                     minesCounterHtml.value = minesLeftCounter
@@ -332,7 +310,6 @@ class game {
                         disableAllButtons.disabled = true
                         clearInterval(timerId)
                     }
-
                 }
             }
         })
@@ -359,15 +336,11 @@ class game {
             let rightDownNumbers = [0,-1,-board1.x,-board1.x-1]
             let rightUpNumbers = [0,-1,board1.x-1,board1.x]
             let tableNumbers = ['1','2','3','4','5']
-
             let buttonIdForDelete = []
             let btnWithNum = 0
             let getPressedDocument = document.getElementById(board1.tableId[indexOfPressedButton])
             let losePicture = document.getElementById("restartBtn")
             console.log(board1.buttonId[indexOfPressedButton])
-
-
-
             for (let i = 0;i<field1.minesForStopwatch.length;i++){
                 if (indexOfPressedButton===field1.minesForStopwatch[i]){   // if user pressed a btn with mine, the stopwatch is stopping, all mines are showing and buttons are disabling
                     clearInterval(timerId)
@@ -378,10 +351,9 @@ class game {
                         btnWithMines.style.opacity = '0'
                         for (let k = 0;k<board1.buttonId.length;k++){
                             let disableAllButtons = document.getElementById(board1.buttonId[k])
-                            disableAllButtons.disabled = true
+                            disableAllButtons.style.pointerEvents = "none"
                         }
                     }
-
                 }
             }
             for (let i = 0;i<tableNumbers.length;i++){
@@ -399,10 +371,8 @@ class game {
                 }
             }
             buttonIdForDelete = board1.buttonId.filter(i => !field1.leftEdges.includes(i) && !field1.rightEdges.includes(i) && !field1.upperEdges.includes(i) && !field1.lowerEdges.includes(i) && !field1.corners.includes(i))  // buttons id which not include edges
-
-
             function buttonDelete() {                   // if button what user pressed = any number of the array with empty fields
-                let buttonsForDelete = []               // we should write the array with that numbers to a new array so we could delete buttons
+                let buttonsForDelete = []               // we should write the array with that numbers to a new array, so we could delete buttons
                 for (let i = 0;i<field1.emptyTabCopy.length;i++){
                     for (let j = 0;j<field1.emptyTabCopy[i].length;j++){
                         if (board1.buttonId[indexOfPressedButton]===field1.emptyTabCopy[i][j]){
@@ -414,8 +384,6 @@ class game {
                     for (let j=0;j<field1.leftEdges.length;j++){
                         for (let k=0;k<numbersAroundButtonLeft.length;k++){
                             let btnDeletedInt = Number(buttonsForDelete[i])
-                            let btnDeleted = document.getElementById(board1.buttonId[btnDeletedInt])
-                            btnDeleted.style.opacity = '0'
                             if (buttonsForDelete[i]===field1.leftEdges[j]){
                                 let btnDeleted = document.getElementById(board1.buttonId[btnDeletedInt+numbersAroundButtonLeft[k]])
                                 btnDeleted.style.opacity = '0'
@@ -456,12 +424,8 @@ class game {
                                     btnDeleted.style.opacity = '0'
                                 }
                             }
-
-
                         }
-
                     }
-
                 }
                 for (let i = 0;i<buttonsForDelete.length;i++){
                     for (let j = 0;j<buttonIdForDelete.length;j++){
@@ -470,16 +434,11 @@ class game {
                                 let btnDeletedInt = Number(buttonsForDelete[i])
                                 let btnDeleted = document.getElementById(board1.buttonId[btnDeletedInt+numbersAroundButton[k]])
                                 btnDeleted.style.opacity = '0'
-
                             }
-
-
                         }
                     }
                 }
-
             }
-
             if (btnWithNum!==1){
                 buttonDelete()
                 for (let i = 0;i<board1.buttonId.length;i++){
@@ -489,12 +448,9 @@ class game {
                             minesLeftCounter++
                             minesCounterHtml.value = minesLeftCounter
                         }
-
                     }
-
                 }
             }
-
         })
     }
 }
