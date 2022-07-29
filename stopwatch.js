@@ -1,38 +1,49 @@
-let timerIsSet = 0
-let timerId = null // will be used to stop the stopwatch
-let hours = 0
-let minutes = 0
-let seconds = 0
-let timeToString = ['00','01','02','03','04','05','06','07','08','09']
-function stopwatch(){
-    timerId = window.setInterval(function(){
-        let clock = document.getElementById("stopwatch");
-        if (seconds===60){
-            seconds = 0
-            minutes++
-        }
-        if (minutes===60){
-            minutes = 0
-            hours++
-        }
-        if (hours===100){
-            hours = 0
-            minutes = 0
-            seconds = 0
-        }
-        for (let i = 0;i<timeToString.length;i++){
-            if (hours===i){
-                hours = timeToString[i]
-            }
-            if (minutes===i){
-                minutes = timeToString[i]
-            }
-            if (seconds===i){
-                seconds = timeToString[i]
-            }
-        }
+class Stopwatch {
+  start;
 
-        clock.value = hours + ':' + minutes + ':' + seconds
-        seconds++
-    },1000);
-};
+  timerIsSet = 0;
+
+  timerId = null; // will be used to stop the stopwatch
+
+  hours = 0;
+
+  minutes = 0;
+
+  seconds = 0;
+
+  timeToString = ['00', '01', '02', '03', '04', '05', '06', '07', '08', '09'];
+
+  startStopwatch() {
+    this.timerId = window.setInterval(this.start = () => {
+      const clock = document.getElementById('stopwatch');
+      if (this.seconds === 60) {
+        this.seconds = 0;
+        this.minutes++;
+      }
+      if (this.minutes === 60) {
+        this.minutes = 0;
+        this.hours++;
+      }
+      if (this.hours === 100) {
+        this.hours = 0;
+        this.minutes = 0;
+        this.seconds = 0;
+      }
+      for (let i = 0; i < this.timeToString.length; i++) {
+        if (this.hours === i) {
+          this.hours = this.timeToString[i];
+        }
+        if (this.minutes === i) {
+          this.minutes = this.timeToString[i];
+        }
+        if (this.seconds === i) {
+          this.seconds = this.timeToString[i];
+        }
+      }
+
+      clock.value = `${this.hours}:${this.minutes}:${this.seconds}`;
+      this.seconds++;
+    }, 1000);
+  }
+}
+stopwatch = new Stopwatch();
