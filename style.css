@@ -1,8 +1,19 @@
-table.table {
+.table {
     margin:auto;border-style: ridge;border-width: 1.9em; position: relative;
 }
 .info {
     position: relative; height: 3em; background: darkgrey; margin: auto;
+}
+.cellStyle{
+    border: 1px solid black;
+    width: 55px;
+    height: 55px;
+}
+.jsButtonsStyle{
+    width: 60px;
+    height: 60px;
+    margin-left: -4.5em;
+    background: gray;
 }
 .restart {
     background-image: url("btn.PNG");
@@ -13,7 +24,6 @@ table.table {
     background-image: url("hover2.PNG");
 }
 .form {
-
     position: absolute;
     display: inline-block;
     left: 5%;
@@ -21,7 +31,6 @@ table.table {
     transform:translate(-5%);
 }
 .minesCountForm {
-
     position: absolute;
     display: inline-block;
     right: 4%;
@@ -53,7 +62,6 @@ table.table {
     display: inline-block;
     left: 26%;
     top: 30%;
-    /*transform:translate(-10%);*/
 }
 .XInput{
     width: 30px;

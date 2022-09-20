@@ -7,6 +7,10 @@ class MinePlace {
 
   minesForStopwatch = [];
 
+  minesLeftCounter = [];
+
+  flagCounter = 0;
+
   constructor() {
     this.minePlace();
   }
@@ -28,40 +32,61 @@ class MinePlace {
     this.randomMinesTemp = random();
     this.minesAmount = (board.size) / 8;
     this.minesAmount = Math.floor(this.minesAmount);
+    this.minesLeftCounter = this.minesAmount;
     for (let i = 0; i < this.minesAmount; i++) {
       // picking first digits to place the mines. Amount of mines defined by the board size
       const rand = this.randomMinesTemp[this.randomMinesTemp.length - 1 - i];
       this.minesForStopwatch.push(rand);
       // will be used later on to stop the timer if button with mine is pressed
-      this.mines.push(`${rand}td`);
+      this.mines.push(rand);
+    }
+    for (let i = 0; i < this.mines.length; i++) {
+      // placing mines and changing the field's property "mine"
+      board.fieldsList[this.mines[i]].mine = true;
     }
     for (let i = 0; i < board.size; i++) {
-      // counting the mines to show it on the table cell
+      // counting mines to show them on the table cell
       let minesCounter = 0;
-      for (let j = 0; j < this.minesAmount; j++) {
-        if (board.tableId[i + 1] === this.mines[j]) {
+      if (i < board.size - 1) {
+        if (board.fieldsList[i + 1].mine === true) {
           minesCounter++;
-        } else if (board.tableId[i + board.x + 1] === this.mines[j]) {
-          minesCounter++;
-        } else if (board.tableId[i + board.x] === this.mines[j]) {
-          minesCounter++;
-        } else if (board.tableId[i + board.x - 1] === this.mines[j]) {
-          minesCounter++;
-        } else if (board.tableId[i - 1] === this.mines[j]) {
-          minesCounter++;
-        } else if (board.tableId[i - board.x + 1] === this.mines[j]) {
-          minesCounter++;
-        } else if (board.tableId[i - board.x] === this.mines[j]) {
-          minesCounter++;
-        } else if (board.tableId[i - board.x - 1] === this.mines[j]) {
-          minesCounter++;
-        } else if (board.tableId[i] === this.mines[j]) {
-          const mineDraw = document.getElementById(board.tableId[i]);
-          mineDraw.style.background = "url('mine.png')";
         }
       }
+      if (i < board.size - board.x - 1) {
+        if (board.fieldsList[i + board.x + 1].mine === true) {
+          minesCounter++;
+        }
+      }
+      if (i <= board.size - board.x - 1) {
+        if (board.fieldsList[i + board.x].mine === true) {
+          minesCounter++;
+        } else if (board.fieldsList[i + board.x - 1].mine === true) {
+          minesCounter++;
+        }
+      }
+      if (i !== 0) {
+        if (board.fieldsList[i - 1].mine === true) {
+          minesCounter++;
+        }
+      }
+      if (i >= board.x) {
+        if (board.fieldsList[i - board.x + 1].mine === true) {
+          minesCounter++;
+        } else if (board.fieldsList[i - board.x].mine === true) {
+          minesCounter++;
+        }
+      }
+      if (i > board.x) {
+        if (board.fieldsList[i - board.x - 1].mine === true) {
+          minesCounter++;
+        }
+      }
+      if (board.fieldsList[i].mine === true) {
+        board.fieldsList[i].td.style.background = "url('mine.png')";
+      }
       minesCounter = minesCounter.toString();
-      const drawCounter = document.getElementById(board.tableId[i]);
+      const drawCounter = board.fieldsList[i].td;
+      board.fieldsList[i].amountOfMinesAround = minesCounter;
       drawCounter.innerHTML = minesCounter;
       drawCounter.style.textAlign = 'center';
       if (minesCounter === '1') { // adding color to each number
@@ -79,9 +104,10 @@ class MinePlace {
         drawCounter.innerHTML = ' ';
       }
     }
-    for (let i = 0; i < this.minesAmount; i++) {
-      const minesPos = document.getElementById(this.mines[i]);
-      minesPos.innerHTML = '  ';
+    for (let i = 0; i < board.fieldsList.length; i++) {
+      if (board.fieldsList[i].mine === true) {
+        board.fieldsList[i].td.innerHTML = '  ';
+      }
     }
   }
 }

@@ -34,3 +34,4 @@ class LoadAndSaveTheBoard {
     sessionStorage.setItem('yValue', document.getElementById('YInput').value);
   }
 }
+const load = new LoadAndSaveTheBoard();
