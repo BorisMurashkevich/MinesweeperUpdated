@@ -5,6 +5,7 @@
     position: relative; height: 3em; background: darkgrey; margin: auto;
 }
 .cellStyle{
+    text-align: center;
     border: 1px solid black;
     width: 55px;
     height: 55px;
@@ -42,6 +43,12 @@
     left:50%;
     top: 10%;
     transform:translate(-50%);
+    display: inline-block;
+}
+.diffLevel{
+    position: absolute;
+    left: 60%;
+    top: 30%;
     display: inline-block;
 }
 .stopwatch {

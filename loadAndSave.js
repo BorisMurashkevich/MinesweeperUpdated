@@ -1,4 +1,5 @@
-class LoadAndSaveTheBoard {
+class LoadAndSaveTheBoard { // this class is responsible for saving and loading size of the board
+  // provided by user
   xValue;
 
   yValue;
@@ -11,6 +12,9 @@ class LoadAndSaveTheBoard {
       this.yValue = document.getElementById('YInput').value;
       this.xValue = Number(this.xValue);
       this.yValue = Number(this.yValue);
+    }
+    if (sessionStorage.getItem('diffLevel') !== null) {
+      document.getElementById('diffLevel').value = sessionStorage.getItem('diffLevel');
     }
     if (sessionStorage.getItem('xValue') === null) {
       this.xValue = document.getElementById('XInput').value;
@@ -32,6 +36,7 @@ class LoadAndSaveTheBoard {
   valueSave() { // saving the previous set x and y
     sessionStorage.setItem('xValue', document.getElementById('XInput').value);
     sessionStorage.setItem('yValue', document.getElementById('YInput').value);
+    sessionStorage.setItem('diffLevel', document.getElementById('diffLevel').value);
   }
 }
 const load = new LoadAndSaveTheBoard();

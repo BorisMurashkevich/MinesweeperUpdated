@@ -1,4 +1,4 @@
-class MinePlace {
+class Mines { // this class is used to place mines and count them for the field to show
   minesAmount;
 
   randomMinesTemp = [];
@@ -9,10 +9,9 @@ class MinePlace {
 
   minesLeftCounter = [];
 
-  flagCounter = 0;
-
   constructor() {
     this.minePlace();
+    this.countMines();
   }
 
   minePlace() {
@@ -30,8 +29,19 @@ class MinePlace {
       return randomMinesTemp;
     };
     this.randomMinesTemp = random();
-    this.minesAmount = (board.size) / 8;
-    this.minesAmount = Math.floor(this.minesAmount);
+    const difficultyLevelMines = () => { // number of mines is selected based on the difficulty level
+      if (load.xValue === 9) {
+        this.minesAmount = 10;
+      } else if (load.xValue === 15) {
+        this.minesAmount = 20;
+      } else if (load.xValue === 20) {
+        this.minesAmount = 45;
+      } else { // if custom size of the board is selected, then number of mines should be calculated
+        this.minesAmount = (board.size) / 8;
+        this.minesAmount = Math.floor(this.minesAmount);
+      }
+    };
+    difficultyLevelMines();
     this.minesLeftCounter = this.minesAmount;
     for (let i = 0; i < this.minesAmount; i++) {
       // picking first digits to place the mines. Amount of mines defined by the board size
@@ -44,23 +54,26 @@ class MinePlace {
       // placing mines and changing the field's property "mine"
       board.fieldsList[this.mines[i]].mine = true;
     }
+  }
+
+  countMines() {
     for (let i = 0; i < board.size; i++) {
-      // counting mines to show them on the table cell
+      // counting mines around the field, it would be used later to show numbers on a field
       let minesCounter = 0;
       if (i < board.size - 1) {
         if (board.fieldsList[i + 1].mine === true) {
           minesCounter++;
         }
       }
-      if (i < board.size - board.x - 1) {
-        if (board.fieldsList[i + board.x + 1].mine === true) {
+      if (i < board.size - board.sizeX - 1) {
+        if (board.fieldsList[i + board.sizeX + 1].mine === true) {
           minesCounter++;
         }
       }
-      if (i <= board.size - board.x - 1) {
-        if (board.fieldsList[i + board.x].mine === true) {
+      if (i <= board.size - board.sizeX - 1) {
+        if (board.fieldsList[i + board.sizeX].mine === true) {
           minesCounter++;
-        } else if (board.fieldsList[i + board.x - 1].mine === true) {
+        } else if (board.fieldsList[i + board.sizeX - 1].mine === true) {
           minesCounter++;
         }
       }
@@ -69,46 +82,21 @@ class MinePlace {
           minesCounter++;
         }
       }
-      if (i >= board.x) {
-        if (board.fieldsList[i - board.x + 1].mine === true) {
+      if (i >= board.sizeX) {
+        if (board.fieldsList[i - board.sizeX + 1].mine === true) {
           minesCounter++;
-        } else if (board.fieldsList[i - board.x].mine === true) {
-          minesCounter++;
-        }
-      }
-      if (i > board.x) {
-        if (board.fieldsList[i - board.x - 1].mine === true) {
+        } else if (board.fieldsList[i - board.sizeX].mine === true) {
           minesCounter++;
         }
       }
-      if (board.fieldsList[i].mine === true) {
-        board.fieldsList[i].td.style.background = "url('mine.png')";
+      if (i > board.sizeX) {
+        if (board.fieldsList[i - board.sizeX - 1].mine === true) {
+          minesCounter++;
+        }
       }
       minesCounter = minesCounter.toString();
-      const drawCounter = board.fieldsList[i].td;
       board.fieldsList[i].amountOfMinesAround = minesCounter;
-      drawCounter.innerHTML = minesCounter;
-      drawCounter.style.textAlign = 'center';
-      if (minesCounter === '1') { // adding color to each number
-        drawCounter.style.color = 'blue';
-      } else if (minesCounter === '2') {
-        drawCounter.style.color = 'green';
-      } else if (minesCounter === '3') {
-        drawCounter.style.color = 'red';
-      } else if (minesCounter === '4') {
-        drawCounter.style.color = 'black';
-      } else if (minesCounter === '5') {
-        drawCounter.style.color = 'brown';
-      }
-      if (minesCounter === '0') {
-        drawCounter.innerHTML = ' ';
-      }
-    }
-    for (let i = 0; i < board.fieldsList.length; i++) {
-      if (board.fieldsList[i].mine === true) {
-        board.fieldsList[i].td.innerHTML = '  ';
-      }
     }
   }
 }
-const minePlace = new MinePlace();
+const mines = new Mines();
