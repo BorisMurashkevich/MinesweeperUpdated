@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <title>MinesweeperUpdated</title>
     <link rel="stylesheet" href="style.css">
-
-
 </head>
 <body oncontextmenu="return false;"></body>
 <div class="info" id="info">
@@ -18,19 +16,19 @@
     <div class="XYDiv">
         <form>
             X:
-            <input id="XInput" class="XInput" size="1" value="9" maxlength="2" oninput="load.changeX()" onchange="load.valueSave();location.reload()">
+            <input id="XInput" class="XInput" size="1" value="9" maxlength="2" oninput="game.load.changeX()" onchange="game.load.valueSave();location.reload()">
             Y:
-            <input id="YInput" class="YInput" size="1" value="9" maxlength="2" oninput="load.changeY()" onchange="load.valueSave();location.reload()">
+            <input id="YInput" class="YInput" size="1" value="9" maxlength="2" oninput="game.load.changeY()" onchange="game.load.valueSave();location.reload()">
         </form>
     </div>
-    <div class="btn" id="restartDiv">
-        <button type="button" id="restartBtn" onclick="location.reload()" class="restart"></button>
-    </div>
-    <select class="diffLevel" onchange="game.difficultyChange();load.valueSave();location.reload()" id="diffLevel">
+    <select class="diffLevel" onchange="game.difficulty();game.load.valueSave();location.reload()" id="diffLevel">
         <option value="Easy">Easy</option>
         <option value="Medium">Medium</option>
         <option value="Hard">Hard</option>
     </select>
+    <div class="btn" id="restartDiv">
+        <button type="button" id="restartBtn" onclick="location.reload()" class="restart"></button>
+    </div>
     <div class="minesCountForm">
         <form name=minesCounter>
             <input name=minesCounter id="minesCounter" class="minesCounter" size=2 value="0" disabled>
@@ -41,10 +39,9 @@
 </div>
 <table class="table" id="table">
 </table>
+<script src="stopwatch.js"></script>
 <script src="loadAndSave.js"></script>
 <script src="field.js"></script>
 <script src="board.js"></script>
-<script src="mines.js"></script>
 <script src="game.js"></script>
-<script src="stopwatch.js"></script>
 </html>

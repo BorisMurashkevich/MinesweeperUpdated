@@ -1,18 +1,25 @@
-class Game { // this class is responsible for game activity,
-  // in this case changing difficulty and rendering info on the top of the board
-
+class Game { /** This class responsible for starting the game, creating the board,
+ maintaining UI and changing difficulty */
   constructor() {
-    this.renderInfoMenu();
-    board.separateEmptyFields(0);
+    this.load = new LoadAndSaveTheBoard();
+    this.start();
   }
 
-  renderInfoMenu() {
-    document.getElementById('minesCounter').value = mines.minesAmount;
-    document.getElementById('info').style.width = `${60 * board.sizeX + 60 + board.sizeX * 3.2}px`;
+  start() { // method to initialize the game
+    this.load.valueLoad(); // loading the previous selected size of the board
+    const board = new Board(this.load.xValue, this.load.yValue);
+    this.UI(board.sizeX, board.sizeY);
+  }
+
+  UI(boardX, boardY) { // initializing UI
+    const minesCounter = document.getElementById('minesCounter');
+    minesCounter.value = Math.floor((boardX * boardY) / 8);
+    document.getElementById('info').style.width = `${60 * boardX + 60 + boardY * 3.2}px`;
     // formula for measuring size of the info menu (the one with the counter and stuff)
+    stopwatch.startStopwatch();
   }
 
-  difficultyChange() {
+  difficulty() { // method to change difficulty
     const difficultyLevel = document.getElementById('diffLevel');
     if (difficultyLevel.value === 'Easy') {
       document.getElementById('XInput').value = 9;

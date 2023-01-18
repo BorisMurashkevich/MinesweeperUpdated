@@ -1,8 +1,6 @@
 class Stopwatch {
-  // this class contains stopwatch, which is located on the top of the board inside the info menu
+  /** this class contains stopwatch which is located on the top of the board inside the info menu */
   start;
-
-  timerIsSet = 0;
 
   timerId = null; // will be used to stop the stopwatch
 
