@@ -1,4 +1,6 @@
-class Board { /** this class is responsible for creating the board and showing empty fields */
+/** This class is responsible for creating the board
+ *  and showing empty fields. */
+class Board {
   btnId = 0;
 
   table = document.querySelector('table');
@@ -18,7 +20,13 @@ class Board { /** this class is responsible for creating the board and showing e
     this.minesCount();
   }
 
-  createBoard(x, y) { // creating the board with provided size
+  /**
+   * Creates the board with provided size.
+   * @param {number} x Number of fields by x coordinate.
+   * @param {number} y Number of fields by y coordinate.
+   */
+
+  createBoard(x, y) {
     for (let i = 0; i < y; i++) {
       const tr = document.createElement('tr'); // creating rows for the table
       for (let j = 0; j < x; j++) {
@@ -34,27 +42,47 @@ class Board { /** this class is responsible for creating the board and showing e
       this.table.appendChild(tr);
     }
   }
+  /**
+   * Generating mine position.
+   * @param {Array} mines All coordinates of mines which will be placed on the board.
+   * @return {number} Generated coordinate of mine.
+   */
 
-  placeMines(numberOfMines) { // placing mines with provided amount of mines
+  generateMinePos(mines) {
+    const position = Math.floor(Math.random() * this.size); // generating random position for mine
+    if (mines.includes(position)) { // check if there was already generated the same number
+      this.generateMinePos(mines);
+    }
+    return position;
+  }
+  /**
+   * Placing mines with provided amount of mines.
+   * @param {number} numberOfMines Amount of mines which will be placed on the board.
+   */
+
+  placeMines(numberOfMines) {
     const mines = [];
     for (let i = 0; i < numberOfMines; i++) {
-      const position = Math.floor(Math.random() * this.size); // generating random position for mine
-      if (!mines.includes(position)) {
-        mines.push(position);
-        this.fieldsList[position].mine = true;
-        this.fieldsList[position].td.innerHTML = '  ';
-      } else { // if same number was generated then generating a new number
-        mines.push(Math.floor(Math.random() * this.size));
-        this.fieldsList[position].mine = true;
-        this.fieldsList[position].td.innerHTML = '  ';
-      }
+      const position = this.generateMinePos(mines); // generated mine position
+      mines.push(position);
+      this.fieldsList[position].mine = true;
     }
   }
+  /**
+   * Counting mines to show them on the fields
+   * First we go through all the fields to find fields with mines
+   * "current element" - field with mine of current iteration
+   * Then we go through the fields id located around our "current element"
+   * Those fields id are called "currentLoopElementId"
+   * While we go through field id's we're accessing fields by those id's
+   * and incrementing the counter
+   */
 
-  minesCount() { // counting mines to show them on the fields
+  minesCount() {
     for (let i = 0; i < this.fieldsList.length; i++) {
       const currentElement = this.fieldsList[i];
-      if (currentElement.mine) {
+      if (currentElement.mine) { // if an element with mine is found
+        // than we add +1 to all the fields around that field with mine
         const { id } = currentElement;
         const row = Math.floor(id / this.sizeX); // row of the current field
         const col = id % this.sizeX;

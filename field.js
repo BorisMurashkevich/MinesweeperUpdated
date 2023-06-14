@@ -1,10 +1,9 @@
-class Field { /** this class is used to create fields on the board, 
- contains logic for win/lose cases and actions on left and right click */
+/** This class is used to create fields on the board,
+ contains logic for win/lose cases and actions on left and right click. */
+class Field {
   td = document.createElement('td');
 
   btn = document.createElement('button');
-
-  stateProperty = 'hidden';
 
   mine = false;
 
@@ -12,101 +11,138 @@ class Field { /** this class is used to create fields on the board,
 
   amountOfMinesAround = 0;
 
+  fieldList;
+
+  id;
+
+  fieldStates = {
+    Shown: 'Shown',
+    Hidden: 'Hidden',
+  };
+
+  stateProperty = this.fieldStates.Hidden;
+
   constructor(btnId, fieldList) {
     this.fieldList = fieldList;
     this.id = btnId;
   }
+  /**
+   * Create cell of the field.
+   * @return {HTMLTableCellElement} cell of the field.
+   */
 
-  createCell() { // method is used to create cell of the field
+  createCell() {
     this.td.className = 'cellStyle';
     this.td.innerHTML = '';
-    const createButton = () => {
-      this.td.appendChild(this.btn);
-      this.btn.className = 'jsButtonsStyle';
-      this.btn.addEventListener('click', () => {
-        if (this.amountOfMinesAround === 0) {
-          this.revealEmptyFields();
-        }
-        this.stateProperty = 'shown';
-        if (this.mine) {
-          this.IsLost();
-        }
-        if (this.stateProperty === 'shown') { // reveal field on click
-          this.btn.style.opacity = '0';
-        }
-        if (this.amountOfMinesAround === 0) {
-          // drawing whitespace instead of 0 if clicked field is empty
-          this.amountOfMinesAround = ' ';
-        }
-        this.td.innerHTML = this.amountOfMinesAround.toString(); // show numbers on click
-      });
-      this.btn.addEventListener('contextmenu', () => { // show flags on the right click
-        const flagImg = "url('flag.png')";
-        let minesLeftCounter = document.getElementById('minesCounter').value;
-        function updateMinesCounter() {
-          document.getElementById('minesCounter').value = minesLeftCounter;
-        }
-        const amountOfMines = Math.floor((this.fieldList.length) / 8);
-        // length of field list is equal to size of the board
-        if (this.stateProperty === 'hidden') {
-          if (this.flag === false) { // if you click and there is no flag image its shows a flag
-            this.btn.style.background = flagImg;
-            this.flag = true;
-            minesLeftCounter--;
-            updateMinesCounter();
-          } else if (this.flag) { // and the opposite
-            this.btn.style.background = 'gray';
-            this.flag = false;
-            minesLeftCounter++;
-            updateMinesCounter();
-          }
-          if (minesLeftCounter < 0) {
-            minesLeftCounter++;
-            updateMinesCounter();
-          }
-          if (minesLeftCounter > amountOfMines) {
-            minesLeftCounter = amountOfMines;
-            updateMinesCounter();
-          }
-          if (minesLeftCounter === 0) {
-            // if all flags were placed correct
-            // all buttons are disabling and timer is stopping
-            let correctPlacedFlags = 0;
-            for (let i = 0; i < this.fieldList.length; i++) {
-              if (this.fieldList[i].flag && this.fieldList[i].mine) {
-                correctPlacedFlags++;
-              }
-              if (correctPlacedFlags === amountOfMines) { // win script
-                this.fieldList[i].btn.style.pointerEvents = 'none';
-                clearInterval(stopwatch.timerId);
-              }
-            }
-          }
-        }
-      });
-    };
-    createButton();
+    this.createButton();
     return this.td;
   }
+  /**
+   * Method to create button. It is used when board is creating a cell
+   */
 
-  revealEmptyFields() { // this method shows empty fields if user clicked on an empty field
-    const emptyFields = this.getEmptyFields();
-    emptyFields.forEach((field) => field.stateProperty = 'shown');
-    for (let i = 0; i < emptyFields.length; i++) {
-      if (emptyFields[i].stateProperty === 'shown') { // showing empty fields
-        if (emptyFields[i].amountOfMinesAround > 0) {
-          // if revealed field has a number this number should be drawn
-          emptyFields[i].td.innerHTML = emptyFields[i].amountOfMinesAround.toString();
-        }
-        emptyFields[i].btn.style.opacity = '0';
+  createButton() {
+    this.td.appendChild(this.btn);
+    this.btn.className = 'jsButtonsStyle';
+    this.leftClickAction();
+    this.rightClickAction();
+  }
+  /**
+   * This method is handling left mouse click
+   */
+
+  leftClickAction() {
+    this.btn.addEventListener('click', () => {
+      if (this.amountOfMinesAround === 0) {
+        this.revealEmptyFields(this.getEmptyFields());
       }
-      if (emptyFields[i].flag) {
-        document.getElementById('minesCounter').value++;
+      this.stateProperty = this.fieldStates.Shown;
+      if (this.mine) {
+        this.ShowAllMines();
       }
+      if (this.stateProperty === this.fieldStates.Shown) { // reveal field on click
+        this.btn.style.opacity = '0';
+      }
+      if (this.amountOfMinesAround === 0) {
+        // drawing whitespace instead of 0 if clicked field is empty
+        this.amountOfMinesAround = ' ';
+      }
+      this.td.innerHTML = this.amountOfMinesAround.toString(); // show numbers on click
+    });
+  }
+  /**
+   * This method is handling right mouse click
+   */
+
+  rightClickAction() {
+    const amountOfMines = Math.floor((this.fieldList.length) / 8);
+    function updateMinesCounter(minesLeftCounter) {
+      document.getElementById('minesCounter').value = minesLeftCounter;
     }
+    this.btn.addEventListener('contextmenu', () => { // show flags on the right click
+      let minesLeftCounter = document.getElementById('minesCounter').value;
+      const flagImg = "url('flag.png')";
+      if (this.stateProperty === this.fieldStates.Hidden && this.flag === false) {
+        this.btn.style.background = flagImg;
+        this.flag = true;
+        minesLeftCounter--;
+        updateMinesCounter(minesLeftCounter); // updating mines counter
+      } else if (this.stateProperty === this.fieldStates.Hidden && this.flag) { // and the opposite
+        this.btn.style.background = 'gray';
+        this.flag = false;
+        minesLeftCounter++;
+        updateMinesCounter(minesLeftCounter);
+      }
+      if (minesLeftCounter < 0) {
+        minesLeftCounter++;
+        updateMinesCounter(minesLeftCounter);
+      }
+      if (minesLeftCounter === 0) {
+        // if all flags were placed correct
+        // all buttons are disabling and timer is stopping
+        let correctPlacedFlags = 0;
+        for (let i = 0; i < this.fieldList.length; i++) {
+          if (this.fieldList[i].flag && this.fieldList[i].mine) {
+            correctPlacedFlags++;
+          }
+          if (correctPlacedFlags === amountOfMines) { // win script
+            this.fieldList[i].btn.style.pointerEvents = 'none';
+            clearInterval(stopwatch.timerId);
+          }
+        }
+      }
+    });
   }
 
-  getEmptyFields() { // this method finds empty fields adjacent to clicked field
+  /**
+   * This method shows empty fields if user clicked on an empty field.
+   */
+  revealEmptyFields(emptyFields) {
+    emptyFields.forEach((field) => {
+      if (field.stateProperty !== this.fieldStates.Shown) {
+        field.stateProperty = this.fieldStates.Shown;
+
+        if (field.amountOfMinesAround > 0) {
+          field.td.innerHTML = field.amountOfMinesAround.toString();
+        }
+
+        field.btn.style.opacity = '0';
+
+        if (field.flag) {
+          document.getElementById('minesCounter').value++;
+        }
+
+        this.revealEmptyFields(emptyFields);
+      }
+    });
+  }
+
+  /**
+   * This method finds empty fields adjacent to clicked field.
+   * @return {Array} list of empty fields.
+   */
+
+  getEmptyFields() {
     let emptyFields = [];
     const sizeOfTheBoard = this.fieldList.length;
     const sizeX = Math.sqrt(sizeOfTheBoard);
@@ -129,7 +165,7 @@ class Field { /** this class is used to create fields on the board,
         // that is currently being processed by loop based on its row and column
         if (newId >= 0 && newId < sizeOfTheBoard) {
           const newField = this.fieldList[newId];
-          if (this.amountOfMinesAround === 0 && this.stateProperty === 'hidden' && !newField.isProcessed) {
+          if (this.amountOfMinesAround === 0 && this.stateProperty === this.fieldStates.Hidden && !newField.isProcessed) {
             newField.isProcessed = true;
             emptyFields.push(newField);
             emptyFields = emptyFields.concat(newField.getEmptyFields());
@@ -142,17 +178,20 @@ class Field { /** this class is used to create fields on the board,
     }
     return emptyFields;
   }
+  /**
+   * This method is used when user has lost the game to show all mines on the board.
+   */
 
-  IsLost() { // lose script
+  ShowAllMines() {
     for (let i = 0; i < this.fieldList.length; i++) {
       document.getElementById('restartBtn').style.backgroundImage = 'url("lose2.PNG")';
       this.fieldList[i].btn.style.pointerEvents = 'none'; // disabling buttons
       clearInterval(stopwatch.timerId); // stopping stopwatch
       if (this.fieldList[i].mine) {
         this.fieldList[i].td.style.background = "url('mine.png')"; // showing all mines
-        this.fieldList[i].stateProperty = 'shown';
+        this.fieldList[i].stateProperty = this.fieldStates.Shown;
       }
-      if (this.fieldList[i].stateProperty === 'shown') {
+      if (this.fieldList[i].stateProperty === this.fieldStates.Shown) {
         this.fieldList[i].btn.style.opacity = '0';
       }
     }

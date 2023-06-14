@@ -1,5 +1,6 @@
+/** This class contains stopwatch which is located on the top of the board inside the info menu. */
+
 class Stopwatch {
-  /** this class contains stopwatch which is located on the top of the board inside the info menu */
   start;
 
   timerId = null; // will be used to stop the stopwatch
@@ -11,6 +12,8 @@ class Stopwatch {
   seconds = 0;
 
   timeToString = ['00', '01', '02', '03', '04', '05', '06', '07', '08', '09'];
+
+  /** This method is used to start the stopwatch when user pressed on any field. */
 
   startStopwatch() {
     this.timerId = window.setInterval(this.start = () => {

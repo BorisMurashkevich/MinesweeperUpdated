@@ -1,15 +1,23 @@
-class Game { /** This class responsible for starting the game, creating the board,
- maintaining UI and changing difficulty */
+/** This class responsible for starting the game, creating the board,
+ maintaining UI and changing difficulty. */
+
+class Game {
   constructor() {
     this.load = new LoadAndSaveTheBoard();
     this.start();
   }
+  /** Method to initialize the game. */
 
-  start() { // method to initialize the game
+  start() {
     this.load.valueLoad(); // loading the previous selected size of the board
     const board = new Board(this.load.xValue, this.load.yValue);
     this.UI(board.sizeX, board.sizeY);
   }
+  /**
+   * Placing mines with provided amount of mines.
+   * @param {number} boardX Size of the board by x coordinate.
+   * @param {number} boardY SIze of the board by y coordinate.
+   */
 
   UI(boardX, boardY) { // initializing UI
     const minesCounter = document.getElementById('minesCounter');
@@ -18,8 +26,11 @@ class Game { /** This class responsible for starting the game, creating the boar
     // formula for measuring size of the info menu (the one with the counter and stuff)
     stopwatch.startStopwatch();
   }
+  /**
+   * Method which is used to change the difficulty of the game.
+   */
 
-  difficulty() { // method to change difficulty
+  difficulty() {
     const difficultyLevel = document.getElementById('diffLevel');
     if (difficultyLevel.value === 'Easy') {
       document.getElementById('XInput').value = 9;
